@@ -59,16 +59,6 @@ The practice includes nested queries, correlated subqueries, joins, aggregations
 - Moderate-level SQL scenarios
 
 ---
-
-## Files Included
-
-| File Name | Description |
-|----------|-------------|
-| `sql_queries.sql` | Contains all SQL practice queries for Week 2 |
-| `README.md` | Documentation and topic overview |
-
----
-
 ## Learning Objectives
 - Improve SQL problem-solving skills
 - Understand advanced querying techniques
