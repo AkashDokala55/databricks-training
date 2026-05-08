@@ -48,6 +48,15 @@ The practice covers basic data retrieval, filtering, aggregation, sorting, joins
 ### 9. Nested Queries
 - Subqueries
 - Using queries inside SELECT and WHERE clauses
+### 10. Nested Queries
+- Subqueries in SELECT statements
+- Subqueries in WHERE clauses
+- Scalar and multi-row subqueries
+
+### 11. Correlated Queries
+- Correlated subqueries
+- Department-wise comparisons
+- Salary and age-based filtering
 
 --
 ## Learning Objectives

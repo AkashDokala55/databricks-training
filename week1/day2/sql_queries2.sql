@@ -1,301 +1,811 @@
 **Schema (MySQL v5.7)**
 
-    -- Create Department table
-    CREATE TABLE Department (
-        department_id INT PRIMARY KEY,
-        name VARCHAR(50) NOT NULL
+    CREATE TABLE Employees (
+        emp_id INT,
+        emp_name VARCHAR(50),
+        department VARCHAR(50),
+        salary INT,
+        city VARCHAR(50),
+        experience INT
     );
     
-    -- Create Employee table
-    CREATE TABLE Employee (
-        emp_id INT PRIMARY KEY,
-        name VARCHAR(100) NOT NULL,
-        age INT,
-        salary DECIMAL(10, 2),
-        department_id INT,
-        hire_date DATE,
-        FOREIGN KEY (department_id) REFERENCES Department(department_id)
-    );
-    
-    -- Create Project table
-    CREATE TABLE Project (
-        project_id INT PRIMARY KEY,
-        name VARCHAR(100) NOT NULL,
-        department_id INT,
-        FOREIGN KEY (department_id) REFERENCES Department(department_id)
-    );
-    
-    -- Insert data into Department table
-    INSERT INTO Department (department_id, name) VALUES
-    (1, 'IT'),
-    (2, 'HR'),
-    (3, 'Finance'),
-    (4, 'Marketing');
-    
-    -- Insert data into Employee table
-    INSERT INTO Employee (emp_id, name, age, salary, department_id, hire_date) VALUES
-    (1, 'John Doe', 28, 50000.00, 1, '2020-01-15'),
-    (2, 'Jane Smith', 34, 60000.00, 2, '2019-07-23'),
-    (3, 'Bob Brown', 45, 80000.00, 1, '2018-02-12'),
-    (4, 'Alice Blue', 25, 45000.00, 3, '2021-03-22'),
-    (5, 'Charlie P.', 29, 50000.00, 2, '2019-12-01'),
-    (6, 'David Green', 38, 70000.00, 4, '2022-05-18'),
-    (7, 'Eve Black', 40, 55000.00, 3, '2021-08-30');
-    
-    -- Insert data into Project table
-    INSERT INTO Project (project_id, name, department_id) VALUES
-    (1, 'Project Alpha', 1),
-    (2, 'Project Beta', 2),
-    (3, 'Project Gamma', 1),
-    (4, 'Project Delta', 3),
-    (5, 'Project Epsilon', 4),
-    (6, 'Project Zeta', 4),
-    (7, 'Project Eta', 3);
-    
-    
-    -- Insert additional data into Department table (if needed)
-    -- No additional departments needed for this data set
-    
-    -- Insert additional data into Employee table to test edge cases for joins and nested queries
-    INSERT INTO Employee (emp_id, name, age, salary, department_id, hire_date) VALUES
-    (8, 'Frank White', 32, 48000.00, NULL, '2021-07-10'),  -- Employee without a department
-    (9, 'Grace Kelly', 27, 65000.00, 1, '2018-11-13'),
-    (10, 'Hannah Lee', 30, 53000.00, 4, '2020-02-25');
-    
-    -- Insert additional data into Project table to test edge cases for joins
-    INSERT INTO Project (project_id, name, department_id) VALUES
-    (8, 'Project Theta', 1),
-    (9, 'Project Iota', NULL);  -- Project without a department
+    INSERT INTO Employees VALUES
+    (101, 'Rahul', 'IT', 75000, 'Hyderabad', 5),
+    (102, 'Anjali', 'HR', 45000, 'Chennai', 3),
+    (103, 'Kiran', 'IT', 82000, 'Bangalore', 6),
+    (104, 'Sneha', 'Finance', 67000, 'Hyderabad', 4),
+    (105, 'Aman', 'HR', 39000, 'Pune', 2),
+    (106, 'Ravi', 'Finance', 91000, 'Mumbai', 8),
+    (107, 'Divya', 'IT', 55000, 'Chennai', 3),
+    (108, 'Meena', 'Sales', 48000, 'Bangalore', 2),
+    (109, 'Arjun', 'Sales', 61000, 'Hyderabad', 5),
+    (110, 'Pooja', 'IT', 73000, 'Mumbai', 4),
+    (111, 'Vikas', 'HR', 52000, 'Pune', 3),
+    (112, 'Nisha', 'Finance', 88000, 'Bangalore', 7),
+    (113, 'Tarun', 'Sales', 46000, 'Chennai', 2),
+    (114, 'Kavya', 'IT', 97000, 'Hyderabad', 9),
+    (115, 'Manoj', 'Finance', 58000, 'Mumbai', 4);
 
 ---
 
-**Query #51**--Retrieve the nth highest salary (for example, 3rd highest).
+**Query #1**--Display all employee details.
 
-    SELECT MAX(salary) AS third_highest_salary
-    FROM Employee
-    WHERE salary < (
-        SELECT MAX(salary)
-        FROM Employee
-        WHERE salary < (
-            SELECT MAX(salary)
-            FROM Employee
-        )
-    );
+    SELECT *FROM Employees;
 
-| third_highest_salary |
-| -------------------- |
-| 65000.0              |
-
----
-**Query #52**--Retrieve employees who are older than all employees in the HR department.
-
-    SELECT name, age
-    FROM Employee
-    WHERE age > ALL (
-        SELECT age
-        FROM Employee
-        WHERE department_id = (
-            SELECT department_id
-            FROM Department
-            WHERE name = 'HR'
-        )
-    );
-
-| name        | age |
-| ----------- | --- |
-| Bob Brown   | 45  |
-| David Green | 38  |
-| Eve Black   | 40  |
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 101    | Rahul    | IT         | 75000  | Hyderabad | 5          |
+| 102    | Anjali   | HR         | 45000  | Chennai   | 3          |
+| 103    | Kiran    | IT         | 82000  | Bangalore | 6          |
+| 104    | Sneha    | Finance    | 67000  | Hyderabad | 4          |
+| 105    | Aman     | HR         | 39000  | Pune      | 2          |
+| 106    | Ravi     | Finance    | 91000  | Mumbai    | 8          |
+| 107    | Divya    | IT         | 55000  | Chennai   | 3          |
+| 108    | Meena    | Sales      | 48000  | Bangalore | 2          |
+| 109    | Arjun    | Sales      | 61000  | Hyderabad | 5          |
+| 110    | Pooja    | IT         | 73000  | Mumbai    | 4          |
+| 111    | Vikas    | HR         | 52000  | Pune      | 3          |
+| 112    | Nisha    | Finance    | 88000  | Bangalore | 7          |
+| 113    | Tarun    | Sales      | 46000  | Chennai   | 2          |
+| 114    | Kavya    | IT         | 97000  | Hyderabad | 9          |
+| 115    | Manoj    | Finance    | 58000  | Mumbai    | 4          |
 
 ---
-**Query #53**--Retrieve departments where the average salary is greater than 55000.
+**Query #2**--Display only employee names and salaries.
 
-    SELECT d.name AS department_name,
-           AVG(e.salary) AS average_salary
-    FROM Employee e
-    JOIN Department d
-    ON e.department_id = d.department_id
-    GROUP BY d.name
-    HAVING AVG(e.salary) > 55000;
+    SELECT emp_name,salary from Employees;
 
-| department_name | average_salary |
-| --------------- | -------------- |
-| IT              | 65000.0        |
-| Marketing       | 61500.0        |
-
----
-**Query #54**--Retrieve employees who work in a department with at least 2 projects.
-
-    SELECT name
-    FROM Employee
-    WHERE department_id IN (
-        SELECT department_id
-        FROM Project
-        GROUP BY department_id
-        HAVING COUNT(project_id) >= 2
-    );
-
-| name        |
-| ----------- |
-| John Doe    |
-| Bob Brown   |
-| Alice Blue  |
-| David Green |
-| Eve Black   |
-| Grace Kelly |
-| Hannah Lee  |
+| emp_name | salary |
+| -------- | ------ |
+| Rahul    | 75000  |
+| Anjali   | 45000  |
+| Kiran    | 82000  |
+| Sneha    | 67000  |
+| Aman     | 39000  |
+| Ravi     | 91000  |
+| Divya    | 55000  |
+| Meena    | 48000  |
+| Arjun    | 61000  |
+| Pooja    | 73000  |
+| Vikas    | 52000  |
+| Nisha    | 88000  |
+| Tarun    | 46000  |
+| Kavya    | 97000  |
+| Manoj    | 58000  |
 
 ---
-**Query #55**--Retrieve employees who were hired on the same date as 'Jane Smith'.
+**Query #3**--Display employee names and departments.
 
-    SELECT name, hire_date
-    FROM Employee
-    WHERE hire_date = (
-        SELECT hire_date
-        FROM Employee
-        WHERE name = 'Jane Smith'
-    );
+    SELECT emp_name,department FROM Employees;
 
-| name       | hire_date  |
+| emp_name | department |
+| -------- | ---------- |
+| Rahul    | IT         |
+| Anjali   | HR         |
+| Kiran    | IT         |
+| Sneha    | Finance    |
+| Aman     | HR         |
+| Ravi     | Finance    |
+| Divya    | IT         |
+| Meena    | Sales      |
+| Arjun    | Sales      |
+| Pooja    | IT         |
+| Vikas    | HR         |
+| Nisha    | Finance    |
+| Tarun    | Sales      |
+| Kavya    | IT         |
+| Manoj    | Finance    |
+
+---
+**Query #4**--Display all employees from the IT department.
+
+    SELECT emp_name FROM Employees WHERE department='IT';
+
+| emp_name |
+| -------- |
+| Rahul    |
+| Kiran    |
+| Divya    |
+| Pooja    |
+| Kavya    |
+
+---
+**Query #5**--Display employee names and experience.
+
+    SELECT emp_name,experience FROM Employees;
+
+| emp_name | experience |
+| -------- | ---------- |
+| Rahul    | 5          |
+| Anjali   | 3          |
+| Kiran    | 6          |
+| Sneha    | 4          |
+| Aman     | 2          |
+| Ravi     | 8          |
+| Divya    | 3          |
+| Meena    | 2          |
+| Arjun    | 5          |
+| Pooja    | 4          |
+| Vikas    | 3          |
+| Nisha    | 7          |
+| Tarun    | 2          |
+| Kavya    | 9          |
+| Manoj    | 4          |
+
+---
+**Query #6**--Find employees with salary greater than 70000.
+
+    SELECT *FROM Employees WHERE salary>70000;
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 101    | Rahul    | IT         | 75000  | Hyderabad | 5          |
+| 103    | Kiran    | IT         | 82000  | Bangalore | 6          |
+| 106    | Ravi     | Finance    | 91000  | Mumbai    | 8          |
+| 110    | Pooja    | IT         | 73000  | Mumbai    | 4          |
+| 112    | Nisha    | Finance    | 88000  | Bangalore | 7          |
+| 114    | Kavya    | IT         | 97000  | Hyderabad | 9          |
+
+---
+**Query #7**--Find employees working in Hyderabad.
+
+    SELECT *FROM Employees WHERE city='Hyderabad';
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 101    | Rahul    | IT         | 75000  | Hyderabad | 5          |
+| 104    | Sneha    | Finance    | 67000  | Hyderabad | 4          |
+| 109    | Arjun    | Sales      | 61000  | Hyderabad | 5          |
+| 114    | Kavya    | IT         | 97000  | Hyderabad | 9          |
+
+---
+**Query #8**--Find employees with experience less than 4 years.
+
+    SELECT *FROM Employees WHERE experience<4;
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 102    | Anjali   | HR         | 45000  | Chennai   | 3          |
+| 105    | Aman     | HR         | 39000  | Pune      | 2          |
+| 107    | Divya    | IT         | 55000  | Chennai   | 3          |
+| 108    | Meena    | Sales      | 48000  | Bangalore | 2          |
+| 111    | Vikas    | HR         | 52000  | Pune      | 3          |
+| 113    | Tarun    | Sales      | 46000  | Chennai   | 2          |
+
+---
+**Query #9**--Find employees from Finance department.
+
+    SELECT *FROM Employees WHERE department='Finance';
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 104    | Sneha    | Finance    | 67000  | Hyderabad | 4          |
+| 106    | Ravi     | Finance    | 91000  | Mumbai    | 8          |
+| 112    | Nisha    | Finance    | 88000  | Bangalore | 7          |
+| 115    | Manoj    | Finance    | 58000  | Mumbai    | 4          |
+
+---
+**Query #10**--Find employees whose salary is equal to 52000.
+
+    SELECT *FROM Employees WHERE salary=52000;
+
+| emp_id | emp_name | department | salary | city | experience |
+| ------ | -------- | ---------- | ------ | ---- | ---------- |
+| 111    | Vikas    | HR         | 52000  | Pune | 3          |
+
+---
+**Query #11**--Find total salary department-wise.
+
+    SELECT department,SUM(salary) AS total_salary FROM Employees GROUP BY department;
+
+| department | total_salary |
+| ---------- | ------------ |
+| Finance    | 304000       |
+| HR         | 136000       |
+| IT         | 382000       |
+| Sales      | 155000       |
+
+---
+**Query #12**--Find average salary in each department.
+
+    SELECT department,AVG(salary) AS avg_salary FROM Employees GROUP BY department;
+
+| department | avg_salary |
 | ---------- | ---------- |
-| Jane Smith | 2019-07-23 |
+| Finance    | 76000.0    |
+| HR         | 45333.3333 |
+| IT         | 76400.0    |
+| Sales      | 51666.6667 |
 
 ---
-**Query #56**--Retrieve the total salary of employees hired in the year 2020.
+**Query #13**--Count employees in each city.
 
-    SELECT SUM(salary) AS total_salary
-    FROM Employee
-    WHERE YEAR(hire_date) = 2020;
+    SELECT city,COUNT(*) AS total_count FROM Employees GROUP BY city;
 
-| total_salary |
-| ------------ |
-| 103000.0     |
-
----
-**Query #57**--Retrieve the average salary of employees in each department ordered by average salary in descending order.
-
-    SELECT d.name AS department_name,
-           AVG(e.salary) AS average_salary
-    FROM Employee e
-    JOIN Department d
-    ON e.department_id = d.department_id
-    GROUP BY d.name
-    ORDER BY average_salary DESC;
-
-| department_name | average_salary |
-| --------------- | -------------- |
-| IT              | 65000.0        |
-| Marketing       | 61500.0        |
-| HR              | 55000.0        |
-| Finance         | 50000.0        |
+| city      | total_count |
+| --------- | ----------- |
+| Bangalore | 3           |
+| Chennai   | 3           |
+| Hyderabad | 4           |
+| Mumbai    | 3           |
+| Pune      | 2           |
 
 ---
-**Query #58**--Retrieve departments with more than 1 employee and an average salary greater than 55000.
+**Query #14**--Find maximum salary in each department.
 
-    SELECT d.name AS department_name,
-           COUNT(e.emp_id) AS employee_count,
-           AVG(e.salary) AS average_salary
-    FROM Employee e
-    JOIN Department d
-    ON e.department_id = d.department_id
-    GROUP BY d.name
-    HAVING COUNT(e.emp_id) > 1
-       AND AVG(e.salary) > 55000;
+    SELECT department,MAX(salary) AS max_salary FROM Employees GROUP BY department;
 
-| department_name | employee_count | average_salary |
-| --------------- | -------------- | -------------- |
-| IT              | 3              | 65000.0        |
-| Marketing       | 2              | 61500.0        |
+| department | max_salary |
+| ---------- | ---------- |
+| Finance    | 91000      |
+| HR         | 52000      |
+| IT         | 97000      |
+| Sales      | 61000      |
 
 ---
-**Query #60**--Retrieve the total number of employees and average salary for departments with more than 2 employees.
+**Query #15**--Find minimum experience department-wise.
 
-    SELECT d.name AS department_name,
-           COUNT(e.emp_id) AS total_employees,
-           AVG(e.salary) AS average_salary
-    FROM Employee e
-    JOIN Department d
-    ON e.department_id = d.department_id
-    GROUP BY d.name
-    HAVING COUNT(e.emp_id) > 2;
+    SELECT department,MIN(salary) AS min_salary FROM Employees GROUP BY department;
 
-| department_name | total_employees | average_salary |
-| --------------- | --------------- | -------------- |
-| IT              | 3               | 65000.0        |
+| department | min_salary |
+| ---------- | ---------- |
+| Finance    | 58000      |
+| HR         | 39000      |
+| IT         | 55000      |
+| Sales      | 46000      |
 
 ---
-**Query #61**--Retrieve the name and salary of employees whose salary is above the average salary of their department.
+**Query #16**--Find departments having more than 3 employees
 
-    SELECT e.name, e.salary
-    FROM Employee e
-    WHERE e.salary > (
-        SELECT AVG(salary)
-        FROM Employee
-        WHERE department_id = e.department_id
-    );
+    SELECT department,COUNT(*) AS total_count FROM Employees GROUP BY department HAVING total_count>3;
 
-| name        | salary  |
-| ----------- | ------- |
-| Jane Smith  | 60000.0 |
-| Bob Brown   | 80000.0 |
-| David Green | 70000.0 |
-| Eve Black   | 55000.0 |
+| department | total_count |
+| ---------- | ----------- |
+| Finance    | 4           |
+| IT         | 5           |
 
 ---
-**Query #62**--Retrieve the names of employees who were hired on the same date as the oldest employee in the company.
+**Query #17**--Find departments where average salary is greater than 60000.
 
-    SELECT name
-    FROM Employee
-    WHERE hire_date = (
-        SELECT hire_date
-        FROM Employee
-        ORDER BY age DESC
-        LIMIT 1
-    );
+    SELECT department,AVG(salary) AS avg_salary FROM Employees GROUP BY department HAVING avg_salary>60000;
 
-| name      |
+| department | avg_salary |
+| ---------- | ---------- |
+| Finance    | 76000.0    |
+| IT         | 76400.0    |
+
+---
+**Query #18**--Find cities having more than 2 employees.
+
+    SELECT city,COUNT(*) AS total_count FROM Employees GROUP BY city HAVING total_count>2;
+
+| city      | total_count |
+| --------- | ----------- |
+| Bangalore | 3           |
+| Chennai   | 3           |
+| Hyderabad | 4           |
+| Mumbai    | 3           |
+
+---
+**Query #19**--Find departments where total salary is greater than 200000.
+
+    SELECT department,SUM(salary) AS total_salary FROM Employees GROUP BY department HAVING total_salary>200000;
+
+| department | total_salary |
+| ---------- | ------------ |
+| Finance    | 304000       |
+| IT         | 382000       |
+
+---
+**Query #20**--Find departments where maximum salary is above 90000.
+
+    SELECT department,MAX(salary) AS max_salary FROM Employees GROUP BY department HAVING max_salary>90000;
+
+| department | max_salary |
+| ---------- | ---------- |
+| Finance    | 91000      |
+| IT         | 97000      |
+
+---
+**Query #21**--Display top 5 highest paid employees.
+
+    SELECT *FROM Employees ORDER BY salary DESC LIMIT 5;
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 114    | Kavya    | IT         | 97000  | Hyderabad | 9          |
+| 106    | Ravi     | Finance    | 91000  | Mumbai    | 8          |
+| 112    | Nisha    | Finance    | 88000  | Bangalore | 7          |
+| 103    | Kiran    | IT         | 82000  | Bangalore | 6          |
+| 101    | Rahul    | IT         | 75000  | Hyderabad | 5          |
+
+---
+**Query #22**--Display top 3 employees with highest experience.
+
+    SELECT *FROM Employees ORDER BY experience DESC LIMIT 3;
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 114    | Kavya    | IT         | 97000  | Hyderabad | 9          |
+| 106    | Ravi     | Finance    | 91000  | Mumbai    | 8          |
+| 112    | Nisha    | Finance    | 88000  | Bangalore | 7          |
+
+---
+**Query #23**--Display top 2 salaries from Finance department.
+
+    SELECT *FROM Employees WHERE department='Finance' ORDER BY salary DESC LIMIT 2;
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 106    | Ravi     | Finance    | 91000  | Mumbai    | 8          |
+| 112    | Nisha    | Finance    | 88000  | Bangalore | 7          |
+
+---
+**Query #24**--Display top 4 employees from Hyderabad.
+
+    SELECT *FROM Employees WHERE city='Hyderabad' LIMIt 4;
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 101    | Rahul    | IT         | 75000  | Hyderabad | 5          |
+| 104    | Sneha    | Finance    | 67000  | Hyderabad | 4          |
+| 109    | Arjun    | Sales      | 61000  | Hyderabad | 5          |
+| 114    | Kavya    | IT         | 97000  | Hyderabad | 9          |
+
+---
+**Query #25**--Display top 1 highest salary employee.
+
+    SELECT *FROM Employees ORDER BY salary DESC LIMIT 1;
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 114    | Kavya    | IT         | 97000  | Hyderabad | 9          |
+
+---
+**Query #26**--Display distinct department names.
+
+    SELECT DISTINCT department FROM Employees;
+
+| department |
+| ---------- |
+| IT         |
+| HR         |
+| Finance    |
+| Sales      |
+
+---
+**Query #27**--Display distinct city names.
+
+    SELECT DISTINCT city FROM Employees;
+
+| city      |
 | --------- |
-| Bob Brown |
+| Hyderabad |
+| Chennai   |
+| Bangalore |
+| Pune      |
+| Mumbai    |
 
 ---
-**Query #63**--Retrieve department names along with the total number of projects they are working on ordered by the number of projects.
+**Query #28**--Display distinct salary values.
 
-    SELECT d.name AS department_name,
-           COUNT(p.project_id) AS total_projects
-    FROM Department d
-    LEFT JOIN Project p
-    ON d.department_id = p.department_id
-    GROUP BY d.name
-    ORDER BY total_projects DESC;
+    SELECT DISTINCT salary FROM Employees;
 
-| department_name | total_projects |
-| --------------- | -------------- |
-| IT              | 3              |
-| Marketing       | 2              |
-| Finance         | 2              |
-| HR              | 1              |
+| salary |
+| ------ |
+| 75000  |
+| 45000  |
+| 82000  |
+| 67000  |
+| 39000  |
+| 91000  |
+| 55000  |
+| 48000  |
+| 61000  |
+| 73000  |
+| 52000  |
+| 88000  |
+| 46000  |
+| 97000  |
+| 58000  |
 
 ---
-**Query #64**--Retrieve the employee name with the highest salary in each department.
+**Query #29**--Display distinct combinations of department and city.
 
-    SELECT d.name AS department_name,
-           e.name AS employee_name,
-           e.salary
-    FROM Employee e
-    JOIN Department d
-    ON e.department_id = d.department_id
-    WHERE e.salary = (
-        SELECT MAX(salary)
-        FROM Employee
-        WHERE department_id = e.department_id
-    );
+    SELECT DISTINCT department, city FROM Employees;
 
-| department_name | employee_name | salary  |
-| --------------- | ------------- | ------- |
-| HR              | Jane Smith    | 60000.0 |
-| IT              | Bob Brown     | 80000.0 |
-| Marketing       | David Green   | 70000.0 |
-| Finance         | Eve Black     | 55000.0 |
+| department | city      |
+| ---------- | --------- |
+| IT         | Hyderabad |
+| HR         | Chennai   |
+| IT         | Bangalore |
+| Finance    | Hyderabad |
+| HR         | Pune      |
+| Finance    | Mumbai    |
+| IT         | Chennai   |
+| Sales      | Bangalore |
+| Sales      | Hyderabad |
+| IT         | Mumbai    |
+| Finance    | Bangalore |
+| Sales      | Chennai   |
+
+---
+**Query #30**--Display distinct experience values.
+
+    SELECT DISTINCT experience FROM Employees;
+
+| experience |
+| ---------- |
+| 5          |
+| 3          |
+| 6          |
+| 4          |
+| 2          |
+| 8          |
+| 7          |
+| 9          |
+
+---
+**Query #31**--Find employees with salary >= 80000.
+
+    SELECT *FROM Employees WHERE salary>=80000;
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 103    | Kiran    | IT         | 82000  | Bangalore | 6          |
+| 106    | Ravi     | Finance    | 91000  | Mumbai    | 8          |
+| 112    | Nisha    | Finance    | 88000  | Bangalore | 7          |
+| 114    | Kavya    | IT         | 97000  | Hyderabad | 9          |
+
+---
+**Query #32**--Find employees with experience <= 3.
+
+    SELECT *FROM Employees WHERE experience<=3;
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 102    | Anjali   | HR         | 45000  | Chennai   | 3          |
+| 105    | Aman     | HR         | 39000  | Pune      | 2          |
+| 107    | Divya    | IT         | 55000  | Chennai   | 3          |
+| 108    | Meena    | Sales      | 48000  | Bangalore | 2          |
+| 111    | Vikas    | HR         | 52000  | Pune      | 3          |
+| 113    | Tarun    | Sales      | 46000  | Chennai   | 2          |
+
+---
+**Query #33**--Find employees whose salary <> 45000.
+
+    SELECT *FROM Employees WHERE salary<>45000;
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 101    | Rahul    | IT         | 75000  | Hyderabad | 5          |
+| 103    | Kiran    | IT         | 82000  | Bangalore | 6          |
+| 104    | Sneha    | Finance    | 67000  | Hyderabad | 4          |
+| 105    | Aman     | HR         | 39000  | Pune      | 2          |
+| 106    | Ravi     | Finance    | 91000  | Mumbai    | 8          |
+| 107    | Divya    | IT         | 55000  | Chennai   | 3          |
+| 108    | Meena    | Sales      | 48000  | Bangalore | 2          |
+| 109    | Arjun    | Sales      | 61000  | Hyderabad | 5          |
+| 110    | Pooja    | IT         | 73000  | Mumbai    | 4          |
+| 111    | Vikas    | HR         | 52000  | Pune      | 3          |
+| 112    | Nisha    | Finance    | 88000  | Bangalore | 7          |
+| 113    | Tarun    | Sales      | 46000  | Chennai   | 2          |
+| 114    | Kavya    | IT         | 97000  | Hyderabad | 9          |
+| 115    | Manoj    | Finance    | 58000  | Mumbai    | 4          |
+
+---
+**Query #34**--Find employees with salary < 50000.
+
+    SELECT *FROM Employees WHERE salary<50000;
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 102    | Anjali   | HR         | 45000  | Chennai   | 3          |
+| 105    | Aman     | HR         | 39000  | Pune      | 2          |
+| 108    | Meena    | Sales      | 48000  | Bangalore | 2          |
+| 113    | Tarun    | Sales      | 46000  | Chennai   | 2          |
+
+---
+**Query #35**--Find employees with experience > 5.
+
+    SELECT *FROM Employees WHERE experience>5;
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 103    | Kiran    | IT         | 82000  | Bangalore | 6          |
+| 106    | Ravi     | Finance    | 91000  | Mumbai    | 8          |
+| 112    | Nisha    | Finance    | 88000  | Bangalore | 7          |
+| 114    | Kavya    | IT         | 97000  | Hyderabad | 9          |
+
+---
+**Query #36**--Find employees from IT department AND salary greater than 70000.
+
+    SELECT *FROM Employees WHERE department = 'IT' AND salary > 70000;
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 101    | Rahul    | IT         | 75000  | Hyderabad | 5          |
+| 103    | Kiran    | IT         | 82000  | Bangalore | 6          |
+| 110    | Pooja    | IT         | 73000  | Mumbai    | 4          |
+| 114    | Kavya    | IT         | 97000  | Hyderabad | 9          |
+
+---
+**Query #37**--Find employees from Hyderabad OR Bangalore.
+
+    SELECT *FROM Employees WHERE city = 'Hyderabad' OR city = 'Bangalore';
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 101    | Rahul    | IT         | 75000  | Hyderabad | 5          |
+| 103    | Kiran    | IT         | 82000  | Bangalore | 6          |
+| 104    | Sneha    | Finance    | 67000  | Hyderabad | 4          |
+| 108    | Meena    | Sales      | 48000  | Bangalore | 2          |
+| 109    | Arjun    | Sales      | 61000  | Hyderabad | 5          |
+| 112    | Nisha    | Finance    | 88000  | Bangalore | 7          |
+| 114    | Kavya    | IT         | 97000  | Hyderabad | 9          |
+
+---
+**Query #38**--Find employees from HR department AND experience less than 3.
+
+    SELECT *FROM Employees WHERE department = 'HR' AND experience < 3;
+
+| emp_id | emp_name | department | salary | city | experience |
+| ------ | -------- | ---------- | ------ | ---- | ---------- |
+| 105    | Aman     | HR         | 39000  | Pune | 2          |
+
+---
+**Query #39**--Find employees with salary greater than 60000 OR experience greater than 6.
+
+    SELECT *FROM Employees WHERE salary > 60000 OR experience > 6;
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 101    | Rahul    | IT         | 75000  | Hyderabad | 5          |
+| 103    | Kiran    | IT         | 82000  | Bangalore | 6          |
+| 104    | Sneha    | Finance    | 67000  | Hyderabad | 4          |
+| 106    | Ravi     | Finance    | 91000  | Mumbai    | 8          |
+| 109    | Arjun    | Sales      | 61000  | Hyderabad | 5          |
+| 110    | Pooja    | IT         | 73000  | Mumbai    | 4          |
+| 112    | Nisha    | Finance    | 88000  | Bangalore | 7          |
+| 114    | Kavya    | IT         | 97000  | Hyderabad | 9          |
+
+---
+**Query #40**--Find employees NOT from Sales department.
+
+    SELECT *FROM Employees WHERE department <> 'Sales';
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 101    | Rahul    | IT         | 75000  | Hyderabad | 5          |
+| 102    | Anjali   | HR         | 45000  | Chennai   | 3          |
+| 103    | Kiran    | IT         | 82000  | Bangalore | 6          |
+| 104    | Sneha    | Finance    | 67000  | Hyderabad | 4          |
+| 105    | Aman     | HR         | 39000  | Pune      | 2          |
+| 106    | Ravi     | Finance    | 91000  | Mumbai    | 8          |
+| 107    | Divya    | IT         | 55000  | Chennai   | 3          |
+| 110    | Pooja    | IT         | 73000  | Mumbai    | 4          |
+| 111    | Vikas    | HR         | 52000  | Pune      | 3          |
+| 112    | Nisha    | Finance    | 88000  | Bangalore | 7          |
+| 114    | Kavya    | IT         | 97000  | Hyderabad | 9          |
+| 115    | Manoj    | Finance    | 58000  | Mumbai    | 4          |
+
+---
+**Query #41**--Find employees working in ('Hyderabad', 'Mumbai').
+
+    SELECT *FROM Employees WHERE city IN ('Hyderabad', 'Mumbai');
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 101    | Rahul    | IT         | 75000  | Hyderabad | 5          |
+| 104    | Sneha    | Finance    | 67000  | Hyderabad | 4          |
+| 106    | Ravi     | Finance    | 91000  | Mumbai    | 8          |
+| 109    | Arjun    | Sales      | 61000  | Hyderabad | 5          |
+| 110    | Pooja    | IT         | 73000  | Mumbai    | 4          |
+| 114    | Kavya    | IT         | 97000  | Hyderabad | 9          |
+| 115    | Manoj    | Finance    | 58000  | Mumbai    | 4          |
+
+---
+**Query #42**--Find employees whose department IN ('IT', 'Finance').
+
+    SELECT *FROM Employees WHERE department IN ('IT', 'Finance');
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 101    | Rahul    | IT         | 75000  | Hyderabad | 5          |
+| 103    | Kiran    | IT         | 82000  | Bangalore | 6          |
+| 104    | Sneha    | Finance    | 67000  | Hyderabad | 4          |
+| 106    | Ravi     | Finance    | 91000  | Mumbai    | 8          |
+| 107    | Divya    | IT         | 55000  | Chennai   | 3          |
+| 110    | Pooja    | IT         | 73000  | Mumbai    | 4          |
+| 112    | Nisha    | Finance    | 88000  | Bangalore | 7          |
+| 114    | Kavya    | IT         | 97000  | Hyderabad | 9          |
+| 115    | Manoj    | Finance    | 58000  | Mumbai    | 4          |
+
+---
+**Query #43**--Find employees whose city NOT IN ('Chennai', 'Pune').
+
+    SELECT *FROM Employees WHERE city NOT IN ('Chennai', 'Pune');
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 101    | Rahul    | IT         | 75000  | Hyderabad | 5          |
+| 103    | Kiran    | IT         | 82000  | Bangalore | 6          |
+| 104    | Sneha    | Finance    | 67000  | Hyderabad | 4          |
+| 106    | Ravi     | Finance    | 91000  | Mumbai    | 8          |
+| 108    | Meena    | Sales      | 48000  | Bangalore | 2          |
+| 109    | Arjun    | Sales      | 61000  | Hyderabad | 5          |
+| 110    | Pooja    | IT         | 73000  | Mumbai    | 4          |
+| 112    | Nisha    | Finance    | 88000  | Bangalore | 7          |
+| 114    | Kavya    | IT         | 97000  | Hyderabad | 9          |
+| 115    | Manoj    | Finance    | 58000  | Mumbai    | 4          |
+
+---
+**Query #44**--Find employees whose salary IN (45000, 75000, 91000).
+
+    SELECT *FROM Employees WHERE salary IN (45000, 75000, 91000);
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 101    | Rahul    | IT         | 75000  | Hyderabad | 5          |
+| 102    | Anjali   | HR         | 45000  | Chennai   | 3          |
+| 106    | Ravi     | Finance    | 91000  | Mumbai    | 8          |
+
+---
+**Query #45**--Find employees whose department NOT IN ('HR', 'Sales').
+
+    SELECT *FROM Employees WHERE department NOT IN ('HR', 'Sales');
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 101    | Rahul    | IT         | 75000  | Hyderabad | 5          |
+| 103    | Kiran    | IT         | 82000  | Bangalore | 6          |
+| 104    | Sneha    | Finance    | 67000  | Hyderabad | 4          |
+| 106    | Ravi     | Finance    | 91000  | Mumbai    | 8          |
+| 107    | Divya    | IT         | 55000  | Chennai   | 3          |
+| 110    | Pooja    | IT         | 73000  | Mumbai    | 4          |
+| 112    | Nisha    | Finance    | 88000  | Bangalore | 7          |
+| 114    | Kavya    | IT         | 97000  | Hyderabad | 9          |
+| 115    | Manoj    | Finance    | 58000  | Mumbai    | 4          |
+
+---
+**Query #46**--Find employees with salary BETWEEN 50000 AND 80000.
+
+    SELECT *FROM Employees WHERE salary BETWEEN 50000 AND 80000;
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 101    | Rahul    | IT         | 75000  | Hyderabad | 5          |
+| 104    | Sneha    | Finance    | 67000  | Hyderabad | 4          |
+| 107    | Divya    | IT         | 55000  | Chennai   | 3          |
+| 109    | Arjun    | Sales      | 61000  | Hyderabad | 5          |
+| 110    | Pooja    | IT         | 73000  | Mumbai    | 4          |
+| 111    | Vikas    | HR         | 52000  | Pune      | 3          |
+| 115    | Manoj    | Finance    | 58000  | Mumbai    | 4          |
+
+---
+**Query #47**--Find employees with experience BETWEEN 3 AND 6.
+
+    SELECT *FROM Employees WHERE experience BETWEEN 3 AND 6;
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 101    | Rahul    | IT         | 75000  | Hyderabad | 5          |
+| 102    | Anjali   | HR         | 45000  | Chennai   | 3          |
+| 103    | Kiran    | IT         | 82000  | Bangalore | 6          |
+| 104    | Sneha    | Finance    | 67000  | Hyderabad | 4          |
+| 107    | Divya    | IT         | 55000  | Chennai   | 3          |
+| 109    | Arjun    | Sales      | 61000  | Hyderabad | 5          |
+| 110    | Pooja    | IT         | 73000  | Mumbai    | 4          |
+| 111    | Vikas    | HR         | 52000  | Pune      | 3          |
+| 115    | Manoj    | Finance    | 58000  | Mumbai    | 4          |
+
+---
+**Query #48**--Find employees whose emp_id BETWEEN 105 AND 112.
+
+    SELECT *FROM Employees WHERE emp_id BETWEEN 105 AND 112;
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 105    | Aman     | HR         | 39000  | Pune      | 2          |
+| 106    | Ravi     | Finance    | 91000  | Mumbai    | 8          |
+| 107    | Divya    | IT         | 55000  | Chennai   | 3          |
+| 108    | Meena    | Sales      | 48000  | Bangalore | 2          |
+| 109    | Arjun    | Sales      | 61000  | Hyderabad | 5          |
+| 110    | Pooja    | IT         | 73000  | Mumbai    | 4          |
+| 111    | Vikas    | HR         | 52000  | Pune      | 3          |
+| 112    | Nisha    | Finance    | 88000  | Bangalore | 7          |
+
+---
+**Query #49**--Find employees with salary NOT BETWEEN 40000 AND 60000.
+
+    SELECT *FROM Employees WHERE salary NOT BETWEEN 40000 AND 60000;
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 101    | Rahul    | IT         | 75000  | Hyderabad | 5          |
+| 103    | Kiran    | IT         | 82000  | Bangalore | 6          |
+| 104    | Sneha    | Finance    | 67000  | Hyderabad | 4          |
+| 105    | Aman     | HR         | 39000  | Pune      | 2          |
+| 106    | Ravi     | Finance    | 91000  | Mumbai    | 8          |
+| 109    | Arjun    | Sales      | 61000  | Hyderabad | 5          |
+| 110    | Pooja    | IT         | 73000  | Mumbai    | 4          |
+| 112    | Nisha    | Finance    | 88000  | Bangalore | 7          |
+| 114    | Kavya    | IT         | 97000  | Hyderabad | 9          |
+
+---
+**Query #50**--Find employees with experience BETWEEN 2 AND 4.
+
+    SELECT *FROM Employees WHERE experience BETWEEN 2 AND 4;
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 102    | Anjali   | HR         | 45000  | Chennai   | 3          |
+| 104    | Sneha    | Finance    | 67000  | Hyderabad | 4          |
+| 105    | Aman     | HR         | 39000  | Pune      | 2          |
+| 107    | Divya    | IT         | 55000  | Chennai   | 3          |
+| 108    | Meena    | Sales      | 48000  | Bangalore | 2          |
+| 110    | Pooja    | IT         | 73000  | Mumbai    | 4          |
+| 111    | Vikas    | HR         | 52000  | Pune      | 3          |
+| 113    | Tarun    | Sales      | 46000  | Chennai   | 2          |
+| 115    | Manoj    | Finance    | 58000  | Mumbai    | 4          |
+
+---
+**Query #51**--Find employees whose names start with 'R'.
+
+    SELECT *FROM Employees WHERE emp_name LIKE 'R%';
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 101    | Rahul    | IT         | 75000  | Hyderabad | 5          |
+| 106    | Ravi     | Finance    | 91000  | Mumbai    | 8          |
+
+---
+**Query #52**--Find employees whose names end with 'a'.
+
+    SELECT *FROM Employees WHERE emp_name LIKE '%a';
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 104    | Sneha    | Finance    | 67000  | Hyderabad | 4          |
+| 107    | Divya    | IT         | 55000  | Chennai   | 3          |
+| 108    | Meena    | Sales      | 48000  | Bangalore | 2          |
+| 110    | Pooja    | IT         | 73000  | Mumbai    | 4          |
+| 112    | Nisha    | Finance    | 88000  | Bangalore | 7          |
+| 114    | Kavya    | IT         | 97000  | Hyderabad | 9          |
+
+---
+**Query #53**--Find employees whose names contain 'v'.
+
+    SELECT *FROM Employees WHERE emp_name LIKE '%v%';
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 106    | Ravi     | Finance    | 91000  | Mumbai    | 8          |
+| 107    | Divya    | IT         | 55000  | Chennai   | 3          |
+| 111    | Vikas    | HR         | 52000  | Pune      | 3          |
+| 114    | Kavya    | IT         | 97000  | Hyderabad | 9          |
+
+---
+**Query #54**--Find employees whose city starts with 'B'.
+
+    SELECT *FROM Employees WHERE city LIKE 'B%';
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 103    | Kiran    | IT         | 82000  | Bangalore | 6          |
+| 108    | Meena    | Sales      | 48000  | Bangalore | 2          |
+| 112    | Nisha    | Finance    | 88000  | Bangalore | 7          |
+
+---
+**Query #55**--Find employees whose department ends with 's'.
+
+    SELECT *FROM Employees WHERE department LIKE '%s';
+
+| emp_id | emp_name | department | salary | city      | experience |
+| ------ | -------- | ---------- | ------ | --------- | ---------- |
+| 108    | Meena    | Sales      | 48000  | Bangalore | 2          |
+| 109    | Arjun    | Sales      | 61000  | Hyderabad | 5          |
+| 113    | Tarun    | Sales      | 46000  | Chennai   | 2          |
 
 ---
 
